@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 
 # use anchor to avoid repeating common configuration for all Go services
 x-go-service: &go-service
