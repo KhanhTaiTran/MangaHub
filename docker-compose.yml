@@ -1,0 +1,54 @@
+version: '3.8'
+
+# use anchor to avoid repeating common configuration for all Go services
+x-go-service: &go-service
+  image: golang:1.22-bookworm # use Bookworm for better compatibility with latest Go and libraries
+  working_dir: /app
+  volumes:
+    - .:/app                  # Mount source code into container
+    - manga-data:/app/data    # Mount volume store DB to avoid losing data on container restart
+  environment:
+    - CGO_ENABLED=1           
+    - DB_PATH=/app/data/mangahub.db
+    - JWT_SECRET=super_secret_dev_key
+
+services:
+  # 1. HTTP API Server (REST, JWT, WebSockets)
+  api-server:
+    <<: *go-service
+    container_name: mh-api
+    command: go run cmd/api-server/main.go
+    ports:
+      - "8080:8080" # Port for HTTP API & WebSocket
+    restart: on-failure
+
+  # 2. TCP Server (Syncing data/Direct Client connection)
+  tcp-server:
+    <<: *go-service
+    container_name: mh-tcp
+    command: go run cmd/tcp-server/main.go
+    ports:
+      - "9000:9000" # Port for TCP Socket
+    restart: on-failure
+
+  # 3. UDP Server (Notification System)
+  udp-server:
+    <<: *go-service
+    container_name: mh-udp
+    command: go run cmd/udp-server/main.go
+    ports:
+      - "9001:9001/udp" # Port for UDP Socket (note the /udp)
+    restart: on-failure
+
+  # 4. gRPC Server (Internal Microservice Communication)
+  grpc-server:
+    <<: *go-service
+    container_name: mh-grpc
+    command: go run cmd/grpc-server/main.go
+    ports:
+      - "50051:50051" # Port for gRPC
+    restart: on-failure
+
+volumes:
+  manga-data:
+    driver: local
