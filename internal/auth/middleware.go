@@ -40,7 +40,7 @@ func JWTMiddleware() gin.HandlerFunc {
 
 		// Set user information from token claims into the context for use in handlers
 		if claims, ok := token.Claims.(jwt.MapClaims); ok {
-			c.Set("userID", claims["sub"])
+			c.Set("user_id", claims["sub"])
 			c.Set("username", claims["username"])
 		} else {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token claims"})

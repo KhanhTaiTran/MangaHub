@@ -40,7 +40,6 @@ func InitDB() {
 	log.Println("Connected to the Database at: ", dbPath)
 }
 
-// TODO: do we need to close the DB connection? If so, we can add a CloseDB() function and call it on application shutdown.
 func ExecuteSchema(schema string) {
 	_, err := DB.Exec(schema)
 	if err != nil {

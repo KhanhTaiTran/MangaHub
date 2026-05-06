@@ -1,0 +1,16 @@
+$kind: http-request
+version: '1.0.0'
+name: Register
+description: Register a new user.
+method: POST
+url: "{{baseUrl}}/auth/register"
+order: 2000
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "username": "khanhtai",
+      "password": "khanhtaitran"
+    }
