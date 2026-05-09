@@ -1,9 +1,7 @@
 $kind: http-request
 name: Get manga
-url: http://localhost:8080/manga
+url: http://localhost:8080/manga?
 method: GET
 queryParams:
-  - key: ""
-    value: ""
-    disabled: true
+  "": ""
 order: 1778338103729

@@ -1,22 +1,22 @@
 $kind: http-request
 name: update progress
-url: " http://localhost:8080/users/"
+url: " http://localhost:8080/users/progress"
 method: PUT
 body:
   type: json
   content: "{\r
 
-    \      \"manga_id\": \"304ceac3-8cdb-4fe7-acf7-2b6ff7a60613\",\r
+    \      \"manga_id\": \"878634d2-ea39-4001-a4bf-31458020d16a\",\r
 
     \      \"list_name\": \"reading\",\r
 
     \      \"status\": \"completed\",\r
 
-    \      \"current_chapter\": 139\r
+    \      \"current_chapter\": 2\r
 
     \  }"
 auth:
   type: bearer
   credentials:
-    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Nzg0MjU0NzMsInN1YiI6IjEyNmM0NWY4LWEwZmItNGE4ZC05MTdjLWY5NGE1N2JmYjY0MyIsInVzZXJuYW1lIjoia2hhbmh0YWkifQ.hxx7VLgLvvofmIusEPcMx6oQMXAipujTZhTlfj1lCAU
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Nzg0NDIyODYsInN1YiI6ImJmNjk2MDY2LTVhMDYtNDE5Yy1hN2Y0LTgxYTM1YzA5NjBjNyIsInVzZXJuYW1lIjoidGNwIn0.rf25tjvfddaA2mP2q_4jRa8sHKcf9nbiwirhMcfIMu8
 order: 4503500956827879

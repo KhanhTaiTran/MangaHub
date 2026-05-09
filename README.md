@@ -8,7 +8,7 @@
 
 MangaHub is a backend system for a manga tracking platform. Built in **Go (Golang)**, it focuses on clean modular structure, practical network programming, and a clear progression through the course phases.
 
-## ✨ Key Features (Phase 1)
+## ✨ Key Features (Phase 1-2)
 
 *   **🔒 Authentication & Security:** 
     *   User registration and login.
@@ -20,6 +20,9 @@ MangaHub is a backend system for a manga tracking platform. Built in **Go (Golan
 *   **📂 User Library & Tracking:** 
     *   Add manga to personal reading lists (e.g., *Reading, Completed, Plan to Read*).
     *   Track and update reading progress (current chapters) using `UPSERT` mechanisms.
+*   **🔁 TCP Progress Sync:**
+    *   JWT-authenticated TCP server for progress updates.
+    *   Broadcasts progress to connected clients.
 *   **⚙️ DevOps & CI/CD:** 
     *   Containerized using **Docker & Docker Compose**.
     *   CI pipeline via **GitHub Actions** for build and test checks.
@@ -83,14 +86,19 @@ Run with Docker **(Recommended)**
    ```
    The API will be available at http://localhost:8080 and the database will be automatically seeded.
 
-Run locally **(Phase 1)**
+Run locally **(Phase 1-2)**
 1. Set environment variables:
     - JWT_SECRET (required)
     - DB_PATH (optional, default mangahub.db)
     - MANGA_SEED_PATH (optional, default data/manga_seed.json)
+    - TCP_SERVER_ADDR (optional, default 127.0.0.1:9000 for local API -> TCP notify)
 2. Start the API server:
     ```
     go run ./cmd/api-server
+    ```
+3. Start the TCP server:
+    ```
+    go run ./cmd/tcp-server
     ```
 
 Seed data (MangaDex)
@@ -99,15 +107,18 @@ Seed data (MangaDex)
     go run ./cmd/seed-mangadex
     ```
 2. The output file is [data/manga_seed.json](data/manga_seed.json).
-
-Phase 1 API details
-- See [docs/phase-1.md](docs/phase-1.md).
+---
+- Phase 1 API details
+   - See [docs/phase-1.md](docs/phase-1.md).
+- Phase 2 TCP details
+   - See [docs/phase-2-tcp.md](docs/phase-2-tcp.md).
+---
 ## 🗺 Roadmap
 
 * [x] Phase 1: Core REST API, Auth, and Database integration.
-* [ ] Phase 2: TCP progress syn Server.
-* [ ] Phase 3: UDP notifications System.
-* [ ] Phase 4: WebSocket chat System.
-* [ ] Phase 5: gRPC Internal services.
+* [x] Phase 2: TCP progress sync server.
+* [ ] Phase 3: UDP notifications system.
+* [ ] Phase 4: WebSocket chat system.
+* [ ] Phase 5: gRPC internal services.
 
----------------------
+---

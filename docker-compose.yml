@@ -9,6 +9,7 @@ x-go-service: &go-service
     - CGO_ENABLED=1           
     - DB_PATH=/app/data/mangahub.db
     - JWT_SECRET=super_secret_dev_key
+    - TCP_SERVER_ADDR=tcp-server:9000
 
 services:
   # 1. HTTP API Server (REST, JWT, WebSockets)

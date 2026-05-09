@@ -5,7 +5,11 @@ import (
 	"MangaHub/pkg/models"
 	"database/sql"
 	"encoding/json"
+	"fmt"
+	"log"
+	"net"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -180,6 +184,12 @@ func UpdateProgress(c *gin.Context) {
 		return
 	}
 
+	// notify TCP server about the progress update
+	token := extractBearerToken(c.GetHeader("Authorization"))
+	if token != "" {
+		go notifyTCPServer(req, token)
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"message":         "Progress updated",
 		"list_name":       listName,
@@ -286,4 +296,54 @@ func parseGenres(genresText string) []string {
 		return []string{}
 	}
 	return genres
+}
+
+// connect to TCP server and send JSON string for testing purposes
+func notifyTCPServer(update updateProgressRequest, token string) {
+	tcpAddr := os.Getenv("TCP_SERVER_ADDR")
+	if tcpAddr == "" {
+		// default for local run
+		tcpAddr = "127.0.0.1:9000"
+	}
+
+	conn, err := net.DialTimeout("tcp", tcpAddr, 2*time.Second)
+	if err != nil {
+		fmt.Println("Error connecting to TCP server:", err)
+		return
+	}
+	defer conn.Close()
+
+	// first message must be auth for the TCP server
+	authPayload := gin.H{
+		"type":  "auth",
+		"token": token,
+	}
+	// then send progress update
+	progressPayload := gin.H{
+		"type":      "progress",
+		"manga_id":  update.MangaID,
+		"chapter":   update.CurrentChapter,
+		"status":    update.Status,
+		"list_name": update.ListName,
+		"timestamp": time.Now().Unix(),
+	}
+	encoder := json.NewEncoder(conn)
+	if err := encoder.Encode(authPayload); err != nil {
+		log.Printf("TCP auth failed: %v", err)
+		return
+	}
+	if err := encoder.Encode(progressPayload); err != nil {
+		log.Printf("TCP progress notify failed: %v", err)
+	}
+}
+
+func extractBearerToken(header string) string {
+	header = strings.TrimSpace(header)
+	if header == "" {
+		return ""
+	}
+	if strings.HasPrefix(strings.ToLower(header), "bearer ") {
+		return strings.TrimSpace(header[7:])
+	}
+	return header
 }
