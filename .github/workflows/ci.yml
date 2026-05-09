@@ -1,6 +1,5 @@
 name: MangaHub CI
 
-# CI sẽ tự động chạy khi bạn push code lên nhánh main hoặc tạo Pull Request
 on:
   push:
     branches: ["main", "master", "dev"]
