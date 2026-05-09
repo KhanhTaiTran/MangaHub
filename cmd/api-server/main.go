@@ -2,6 +2,8 @@ package main
 
 import (
 	"MangaHub/internal/auth"
+	"MangaHub/internal/manga"
+	"MangaHub/internal/user"
 	"MangaHub/pkg/database"
 	"log"
 	"net/http"
@@ -12,51 +14,41 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const schema = `
-CREATE TABLE IF NOT EXISTS users (
-	id TEXT PRIMARY KEY,
-	username TEXT UNIQUE NOT NULL,
-	password_hash TEXT NOT NULL,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS manga (
-	id TEXT PRIMARY KEY,
-	title TEXT NOT NULL,
-	author TEXT NOT NULL,
-	genres TEXT NOT NULL, 
-	status TEXT NOT NULL,
-	total_chapters INTEGER NOT NULL,
-	description TEXT
-);
-
-CREATE TABLE IF NOT EXISTS user_progress (
-	user_id TEXT NOT NULL,
-	manga_id TEXT NOT NULL,
-	current_chapter INTEGER DEFAULT 0,
-	status TEXT DEFAULT 'reading',
-	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY (user_id, manga_id),
-	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-	FOREIGN KEY (manga_id) REFERENCES manga(id) ON DELETE CASCADE
-);
-`
-
 func main() {
 	// fail fast if JWT_SECRET is not set, since it's critical for auth security
 	if os.Getenv("JWT_SECRET") == "" {
 		log.Fatal("JWT_SECRET environment variable is not set")
 	}
 
-	// Initialize database connection
+	// init database connection
 	database.InitDB()
-	defer database.Close()         // Ensure DB connection is closed on application exit
-	database.ExecuteSchema(schema) // Create tables if they don't exist
+	defer database.Close() // ensure DB connection is closed on application exit
+	database.InitSchema()  // create tables and run migrations if needed
 
-	//build gin engine with logger and recovery middleware
-	r := gin.Default() // Default() includes Logger and Recovery middleware
+	// seed data
+	seedPath := os.Getenv("MANGA_SEED_PATH")
+	if seedPath == "" {
+		seedPath = "data/manga_seed.json"
+	}
+	if err := database.SeedMangaFromJSON(seedPath); err != nil {
+		log.Printf("Seed skipped: %v", err)
+	}
 
-	//configure CROS
+	// set up Gin router
+	r := setupRouter()
+
+	//run server on port 8080
+	log.Println("Starting HTTP server on port :8080")
+	if err := r.Run(":8080"); err != nil {
+		log.Fatal("Failed to start HTTP server:", err)
+	}
+}
+
+// helper function to set up Gin router with CORS and API routes
+func setupRouter() *gin.Engine {
+	r := gin.Default()
+
+	// Configure CORS
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"}, // Allow all origins for development
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
@@ -74,6 +66,7 @@ func main() {
 			"timestamp": time.Now().Format(time.RFC3339),
 		})
 	})
+
 	// Auth routes (registration and login)
 	authGroup := r.Group("/auth")
 	{
@@ -81,9 +74,13 @@ func main() {
 		authGroup.POST("/login", auth.Login)
 	}
 
+	// Manga public routes
+	r.GET("/manga", manga.Search)
+	r.GET("/manga/:id", manga.GetByID)
+
 	//test route to verify JWT middleware
 	apiGroup := r.Group("/api")
-	apiGroup.Use(auth.JWTMiddleware()) // protect all /api routes with JWT auth
+	apiGroup.Use(auth.JWTMiddleware())
 	{
 		apiGroup.GET("/profile", func(c *gin.Context) {
 			userID, _ := c.Get("user_id")
@@ -95,9 +92,13 @@ func main() {
 		})
 	}
 
-	//run server on port 8080
-	log.Println("Starting HTTP server on port :8080")
-	if err := r.Run(":8080"); err != nil {
-		log.Fatal("Failed to start HTTP server:", err)
+	// User library routes (protected)
+	userGroup := r.Group("/users")
+	userGroup.Use(auth.JWTMiddleware())
+	{
+		userGroup.POST("/library", user.AddToLibrary)
+		userGroup.GET("/library", user.GetLibrary)
+		userGroup.PUT("/progress", user.UpdateProgress)
 	}
+	return r
 }

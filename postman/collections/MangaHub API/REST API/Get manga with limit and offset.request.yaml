@@ -1,0 +1,10 @@
+$kind: http-request
+name: Get manga with limit and offset
+url: http://localhost:8080/manga?limit=5&offset=10
+method: GET
+queryParams:
+  - key: limit
+    value: "5"
+  - key: offset
+    value: "10"
+order: 4464478391680027

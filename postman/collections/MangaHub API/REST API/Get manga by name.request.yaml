@@ -1,0 +1,8 @@
+$kind: http-request
+name: Get manga by name
+url: http://localhost:8080/manga?q=level
+method: GET
+queryParams:
+  - key: q
+    value: level
+order: 3171217563064470

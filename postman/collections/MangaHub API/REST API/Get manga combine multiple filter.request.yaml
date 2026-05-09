@@ -1,0 +1,9 @@
+$kind: http-request
+name: Get manga combine multiple filter
+url: http://localhost:8080/manga?genre=romance&status=ongoing&limit=10
+method: GET
+queryParams:
+  genre: romance
+  status: ongoing
+  limit: "10"
+order: 4468034518478641

@@ -1,10 +1,10 @@
 $kind: http-request
 version: '1.0.0'
-name: Register
-description: Register a new user.
+name: Login
+description: Authenticate a user and receive a JWT token.
 method: POST
-url: "{{baseUrl}}/auth/register"
-order: 2000
+url: "{{baseUrl}}/auth/login"
+order: 4499788019974294
 headers:
   Content-Type: application/json
 body:

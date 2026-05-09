@@ -38,3 +38,8 @@ mangahub/
 3. Start services using `docker-compose up`.
 4. Run specific servers from `cmd/` for development.
 
+## Set Environment
+```
+set JWT_SECRET=super_secret_dev_key
+set DB_PATH=./data/mangahub.db
+```
