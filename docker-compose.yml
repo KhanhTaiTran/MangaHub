@@ -21,13 +21,13 @@ services:
     restart: on-failure
 
   # 2. TCP Server (Syncing data/Direct Client connection)
-  # tcp-server:
-  #   <<: *go-service
-  #   container_name: mh-tcp
-  #   command: go run cmd/tcp-server/main.go
-  #   ports:
-  #     - "9000:9000" # Port for TCP Socket
-  #   restart: on-failure
+  tcp-server:
+    <<: *go-service
+    container_name: mh-tcp
+    command: go run cmd/tcp-server/main.go
+    ports:
+      - "9000:9000" # Port for TCP Socket
+    restart: on-failure
 
   # # 3. UDP Server (Notification System)
   # udp-server:
