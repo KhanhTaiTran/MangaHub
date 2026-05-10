@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MangaHub - Manga Search</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav>
+      <span class="brand">MangaHub</span>
+      <a href="index.html">Login</a>
+      <a href="register.html">Register</a>
+      <a href="profile.html">Profile</a>
+      <a href="manga.html" class="active">Manga</a>
+      <a href="library-add.html">Add Library</a>
+      <a href="library-list.html">Library</a>
+      <a href="progress.html">Progress</a>
+      <a href="notify.html">Notify</a>
+      <a href="chat.html">Chat</a>
+      <span class="api-base">API: <span id="api-base"></span></span>
+    </nav>
+
+    <header class="page-title">
+      <h1>Manga Search</h1>
+      <p class="muted">Search the catalog or fetch a manga by ID.</p>
+    </header>
+
+    <section class="panel">
+      <h2>Session</h2>
+      <div class="field">
+        <label for="token">JWT token</label>
+        <input id="token" type="text" placeholder="paste token here" />
+      </div>
+      <div class="row">
+        <button id="btn-set-token">Save Token</button>
+        <button id="btn-logout">Logout</button>
+      </div>
+      <p class="muted">Token status: <span id="token-short">none</span></p>
+    </section>
+
+    <section class="panel">
+      <h2>Search Manga</h2>
+      <div class="field">
+        <label for="search-query">Query</label>
+        <input id="search-query" type="text" placeholder="one piece" />
+      </div>
+      <div class="field">
+        <label for="search-author">Author</label>
+        <input id="search-author" type="text" placeholder="oda" />
+      </div>
+      <div class="field">
+        <label for="search-genre">Genre</label>
+        <input id="search-genre" type="text" placeholder="action" />
+      </div>
+      <div class="field">
+        <label for="search-status">Status</label>
+        <input id="search-status" type="text" placeholder="ongoing" />
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="search-limit">Limit</label>
+          <input id="search-limit" type="number" min="1" placeholder="20" />
+        </div>
+        <div class="field">
+          <label for="search-offset">Offset</label>
+          <input id="search-offset" type="number" min="0" placeholder="0" />
+        </div>
+      </div>
+      <div class="row">
+        <button id="btn-search">Search</button>
+        <button id="btn-clear">Clear</button>
+      </div>
+      <pre id="search-log" class="log"></pre>
+    </section>
+
+    <section class="panel">
+      <h2>Get Manga by ID</h2>
+      <div class="field">
+        <label for="manga-id">Manga ID</label>
+        <input id="manga-id" type="text" placeholder="manga_id" />
+      </div>
+      <div class="row">
+        <button id="btn-get-manga">Get Manga</button>
+      </div>
+      <pre id="manga-log" class="log"></pre>
+    </section>
+
+    <script src="app.js"></script>
+  </body>
+</html>

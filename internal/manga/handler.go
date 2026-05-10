@@ -1,6 +1,7 @@
 package manga
 
 import (
+	"MangaHub/internal/notifications"
 	"MangaHub/pkg/database"
 	"MangaHub/pkg/models"
 	"database/sql"
@@ -10,6 +11,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -134,8 +136,27 @@ func NotifyChapterRelease(c *gin.Context) {
 		return
 	}
 
-	go triggerUDPNotification(mangaID, req.Message)
-	c.JSON(http.StatusOK, gin.H{"message": "notification sent"})
+	targetUsers, err := getTargetUsers(mangaID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
+		return
+	}
+	if len(targetUsers) == 0 {
+		c.JSON(http.StatusOK, gin.H{"message": "no target users to notify"})
+		return
+	}
+
+	note := notifications.Notification{
+		ID:        strconv.FormatInt(time.Now().UnixNano(), 10),
+		Type:      "chapter_release",
+		MangaID:   mangaID,
+		Message:   req.Message,
+		Timestamp: time.Now().Unix(),
+	}
+	notifications.Broadcast(targetUsers, note)
+
+	go triggerUDPNotification(mangaID, req.Message, targetUsers)
+	c.JSON(http.StatusOK, gin.H{"message": "notification sent", "targets": len(targetUsers)})
 }
 
 // helper function to parse genres from JSON text stored in database
@@ -169,27 +190,7 @@ func parsePositiveInt(value string, fallback, max int) int {
 }
 
 // TODO: trigger path from HTTP
-func triggerUDPNotification(mangaID string, message string) {
-	// scan database to find users who have this manga in their library and get their user IDs
-	// for each user ID, send a UDP notification with the manga ID and message
-	// this function can be called after updating manga details or adding new chapters to notify users who are interested in that manga
-
-	query := "SELECT DISTINCT user_id FROM user_list_items WHERE manga_id = ? AND status IN ('reading', 'plan_to_read')"
-	rows, err := database.DB.Query(query, mangaID)
-	if err != nil {
-		return
-	}
-	defer rows.Close()
-
-	// collect target user IDs into a slice for sending notifications
-	var targetUsers []string
-	for rows.Next() {
-		var uid string
-		if err := rows.Scan(&uid); err == nil {
-			targetUsers = append(targetUsers, uid)
-		}
-	}
-
+func triggerUDPNotification(mangaID string, message string, targetUsers []string) {
 	if len(targetUsers) == 0 {
 		return // if no user read this manga -> no need to send notification
 	}
@@ -219,6 +220,28 @@ func triggerUDPNotification(mangaID string, message string) {
 	}
 	payloadBytes, _ := json.Marshal(payload)
 	conn.Write(payloadBytes) // send the notification payload to UDP server
+}
+
+func getTargetUsers(mangaID string) ([]string, error) {
+	query := "SELECT DISTINCT user_id FROM user_list_items WHERE manga_id = ? AND status IN ('reading', 'plan_to_read')"
+	rows, err := database.DB.Query(query, mangaID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	// collect target user IDs into a slice for sending notifications
+	var targetUsers []string
+	for rows.Next() {
+		var uid string
+		if err := rows.Scan(&uid); err == nil {
+			targetUsers = append(targetUsers, uid)
+		}
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return targetUsers, nil
 }
 
 func mangaExists(mangaID string) bool {

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MangaHub - Chat</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav>
+      <span class="brand">MangaHub</span>
+      <a href="index.html">Login</a>
+      <a href="register.html">Register</a>
+      <a href="profile.html">Profile</a>
+      <a href="manga.html">Manga</a>
+      <a href="library-add.html">Add Library</a>
+      <a href="library-list.html">Library</a>
+      <a href="progress.html">Progress</a>
+      <a href="notify.html">Notify</a>
+      <a href="chat.html" class="active">Chat</a>
+      <span class="api-base">API: <span id="api-base"></span></span>
+    </nav>
+
+    <header class="page-title">
+      <h1>WebSocket Chat</h1>
+      <p class="muted">Connect to a room and send messages.</p>
+    </header>
+
+    <section class="panel">
+      <h2>Session</h2>
+      <div class="field">
+        <label for="token">JWT token</label>
+        <input id="token" type="text" placeholder="paste token here" />
+      </div>
+      <div class="row">
+        <button id="btn-set-token">Save Token</button>
+        <button id="btn-logout">Logout</button>
+      </div>
+      <p class="muted">Token status: <span id="token-short">none</span></p>
+    </section>
+
+    <section class="panel">
+      <h2>Chat</h2>
+      <div class="field">
+        <label for="chat-room">Room</label>
+        <input id="chat-room" type="text" placeholder="manga_id or room" />
+      </div>
+      <div class="row">
+        <button id="btn-connect">Connect</button>
+        <button id="btn-disconnect">Disconnect</button>
+        <span id="chat-status" class="muted">Disconnected</span>
+      </div>
+      <div id="chat-log" class="log chat-log"></div>
+      <div class="row">
+        <input id="chat-message" type="text" placeholder="Type a message" />
+        <button id="btn-send">Send</button>
+      </div>
+    </section>
+
+    <script src="app.js"></script>
+  </body>
+</html>

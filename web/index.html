@@ -1,0 +1,107 @@
+<!doctype html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MangaHub - Login</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav>
+      <span class="brand">MangaHub</span>
+      <a href="index.html" class="active">Login</a>
+      <a href="register.html">Register</a>
+      <a href="profile.html">Profile</a>
+      <a href="manga.html">Manga</a>
+      <a href="library-add.html">Add Library</a>
+      <a href="library-list.html">Library</a>
+      <a href="progress.html">Progress</a>
+      <a href="notify.html">Notify</a>
+      <a href="chat.html">Chat</a>
+      <span class="api-base">API: <span id="api-base"></span></span>
+    </nav>
+
+    <header class="page-title">
+      <h1>Login</h1>
+      <p class="muted">Sign in first to get a token for other pages.</p>
+    </header>
+
+    <section class="panel">
+      <h2>Session</h2>
+      <div class="field">
+        <label for="token">JWT token</label>
+        <input id="token" type="text" placeholder="paste token here" />
+      </div>
+      <div class="row">
+        <button id="btn-set-token">Save Token</button>
+        <button id="btn-logout">Logout</button>
+      </div>
+      <p class="muted">Token status: <span id="token-short">none</span></p>
+    </section>
+
+    <section class="panel">
+      <h2>Login</h2>
+      <div class="field">
+        <label for="login-username">Username</label>
+        <input id="login-username" type="text" placeholder="demo_user" />
+      </div>
+      <div class="field">
+        <label for="login-password">Password</label>
+        <input id="login-password" type="password" placeholder="pass12345" />
+      </div>
+      <div class="row">
+        <button id="btn-login">Login</button>
+      </div>
+      <pre id="login-log" class="log"></pre>
+    </section>
+
+    <script src="app.js"></script>
+  </body>
+</html>
+<script>
+      const logout = () => {
+        state.token = "";
+        localStorage.removeItem("mh_token");
+        if (state.ws) {
+          state.ws.close();
+          state.ws = null;
+        }
+        showView("auth");
+      };
+
+      document
+        .getElementById("tab-login")
+        .addEventListener("click", () => setMode("login"));
+      document
+        .getElementById("tab-register")
+        .addEventListener("click", () => setMode("register"));
+      document
+        .getElementById("auth-submit")
+        .addEventListener("click", handleAuth);
+      document
+        .getElementById("btn-search")
+        .addEventListener("click", loadManga);
+      document.getElementById("btn-logout").addEventListener("click", logout);
+      document
+        .getElementById("btn-refresh-library")
+        .addEventListener("click", loadLibrary);
+      document
+        .getElementById("btn-connect")
+        .addEventListener("click", () => connectChat(""));
+      document.getElementById("btn-send").addEventListener("click", sendChat);
+      document
+        .getElementById("chat-message")
+        .addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            sendChat();
+          }
+        });
+
+      setMode("login");
+      if (state.token) {
+        showView("dashboard");
+      }
+    </script>
+  </body>
+</html>

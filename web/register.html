@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MangaHub - Register</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav>
+      <span class="brand">MangaHub</span>
+      <a href="index.html">Login</a>
+      <a href="register.html" class="active">Register</a>
+      <a href="profile.html">Profile</a>
+      <a href="manga.html">Manga</a>
+      <a href="library-add.html">Add Library</a>
+      <a href="library-list.html">Library</a>
+      <a href="progress.html">Progress</a>
+      <a href="notify.html">Notify</a>
+      <a href="chat.html">Chat</a>
+      <span class="api-base">API: <span id="api-base"></span></span>
+    </nav>
+
+    <header class="page-title">
+      <h1>Register</h1>
+      <p class="muted">Create a new account for testing.</p>
+    </header>
+
+    <section class="panel">
+      <h2>Session</h2>
+      <div class="field">
+        <label for="token">JWT token</label>
+        <input id="token" type="text" placeholder="paste token here" />
+      </div>
+      <div class="row">
+        <button id="btn-set-token">Save Token</button>
+        <button id="btn-logout">Logout</button>
+      </div>
+      <p class="muted">Token status: <span id="token-short">none</span></p>
+    </section>
+
+    <section class="panel">
+      <h2>Register</h2>
+      <div class="field">
+        <label for="register-username">Username</label>
+        <input id="register-username" type="text" placeholder="new_user" />
+      </div>
+      <div class="field">
+        <label for="register-password">Password</label>
+        <input id="register-password" type="password" placeholder="pass12345" />
+      </div>
+      <div class="row">
+        <button id="btn-register">Register</button>
+      </div>
+      <pre id="register-log" class="log"></pre>
+    </section>
+
+    <script src="app.js"></script>
+  </body>
+</html>

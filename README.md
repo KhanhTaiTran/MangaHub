@@ -89,6 +89,7 @@ Run with Docker **(Recommended)**
    docker compose up --build
    ```
    The API will be available at http://localhost:8080 and the database will be automatically seeded.
+    Demo UI: http://localhost:8080/demo/
 
 Run locally **(Phase 1-3)**
 1. Set environment variables:
@@ -101,6 +102,7 @@ Run locally **(Phase 1-3)**
     ```
     go run ./cmd/api-server
     ```
+    Demo UI: http://localhost:8080/demo/
 3. Start the TCP server:
     ```
     go run ./cmd/tcp-server

@@ -3,6 +3,7 @@ package main
 import (
 	"MangaHub/internal/auth"
 	"MangaHub/internal/manga"
+	"MangaHub/internal/notifications"
 	"MangaHub/internal/user"
 	"MangaHub/internal/websocket"
 	"MangaHub/pkg/database"
@@ -79,8 +80,14 @@ func setupRouter() *gin.Engine {
 	r.GET("/manga", manga.Search)
 	r.GET("/manga/:id", manga.GetByID)
 
+	// Demo UI
+	r.Static("/demo", "./web")
+
 	// WebSocket chat
 	websocket.RegisterRoutes(r)
+
+	// Web demo notification stream
+	notifications.RegisterRoutes(r)
 
 	//test route to verify JWT middleware
 	apiGroup := r.Group("/api")
