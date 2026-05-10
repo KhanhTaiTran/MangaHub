@@ -6,63 +6,115 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"strings"
 )
 
 func main() {
-	// connect to the UDP server at localhost:9001
-	serverAddr, _ := net.ResolveUDPAddr("udp", "127.0.0.1:9001")
+	addr := os.Getenv("UDP_SERVER_ADDR")
+	if addr == "" {
+		addr = "127.0.0.1:9001"
+	}
+
+	serverAddr, err := net.ResolveUDPAddr("udp", addr)
+	if err != nil {
+		fmt.Println("Resolve error:", err)
+		return
+	}
+
 	conn, err := net.DialUDP("udp", nil, serverAddr)
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Dial error:", err)
 		return
 	}
 	defer conn.Close()
 
-	fmt.Println("Connected to UDP Server (localhost:9001)")
+	fmt.Printf("Connected to UDP server (%s)\n", addr)
+	fmt.Println("Commands:")
+	fmt.Println("  register <JWT>")
+	fmt.Println("  unregister")
+	fmt.Println("  notify <manga_id> <message>")
+	fmt.Println("  ack <notification_id>")
+	fmt.Println("  exit")
 
-	// when client starts, it should immediately send a "register" message to the server
-	conn.Write([]byte(`{"type":"register"}`))
-	fmt.Println("Sent Register request...")
+	go readLoop(conn)
 
-	// run a background goroutine to listen for incoming messages from the server
-	go func() {
-		buf := make([]byte, 4096)
-		for {
-			n, _, err := conn.ReadFromUDP(buf) // ReadFromUDP to get sender's address
-			if err != nil {
-				return
-			}
-			rawMsg := string(buf[:n]) // Convert bytes to string for logging
-			fmt.Println("\n Server sent:", rawMsg)
-
-			// check if the message is a notification
-			var payload struct {
-				Type         string `json:"type"`
-				Notification struct {
-					ID string `json:"id"`
-				} `json:"notification"`
-			}
-			json.Unmarshal(buf[:n], &payload)
-
-			// if it's a notification -> immediately send ACK back with ID
-			if payload.Type == "notification" && payload.Notification.ID != "" {
-				ackMsg := fmt.Sprintf(`{"type":"ack", "notification_id":"%s"}`, payload.Notification.ID)
-				conn.Write([]byte(ackMsg))
-				fmt.Println("Automatically sent ACK to server!")
-			}
-		}
-	}()
-
-	// main loop to read user input and send as notifications to the server
-	fmt.Println("\nType a message (or 'exit' to quit):")
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
-		text := scanner.Text()
-		if text == "exit" {
-			break
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" {
+			continue
 		}
-		// send a notify message to the server with the text and a dummy manga_id
-		notifyMsg := fmt.Sprintf(`{"type":"notify", "message":"%s", "manga_id":"304ceac3-8cdb-4fe7-acf7-2b6ff7a60613"}`, text) // test notification with "attack on titan" manga ID
-		conn.Write([]byte(notifyMsg))
+		if line == "exit" {
+			return
+		}
+
+		parts := strings.SplitN(line, " ", 3)
+		switch parts[0] {
+		case "register":
+			if len(parts) < 2 {
+				fmt.Println("Usage: register <JWT>")
+				continue
+			}
+			send(conn, map[string]any{"type": "register", "token": parts[1]})
+		case "unregister":
+			send(conn, map[string]any{"type": "unregister"})
+		case "notify":
+			if len(parts) < 3 {
+				fmt.Println("Usage: notify <manga_id> <message>")
+				continue
+			}
+			send(conn, map[string]any{
+				"type":       "notify",
+				"event_type": "chapter_release",
+				"manga_id":   parts[1],
+				"message":    parts[2],
+			})
+		case "ack":
+			if len(parts) < 2 {
+				fmt.Println("Usage: ack <notification_id>")
+				continue
+			}
+			send(conn, map[string]any{"type": "ack", "notification_id": parts[1]})
+		default:
+			fmt.Println("Unknown command")
+		}
+	}
+}
+
+func readLoop(conn *net.UDPConn) {
+	buf := make([]byte, 4096)
+	for {
+		n, _, err := conn.ReadFromUDP(buf)
+		if err != nil {
+			fmt.Println("Read error:", err)
+			return
+		}
+		fmt.Printf("Received: %s\n", string(buf[:n]))
+
+		var payload struct {
+			Type         string `json:"type"`
+			Notification struct {
+				ID string `json:"id"`
+			} `json:"notification"`
+		}
+		if err := json.Unmarshal(buf[:n], &payload); err != nil {
+			continue
+		}
+		if payload.Type == "notification" && payload.Notification.ID != "" {
+			ack := map[string]any{"type": "ack", "notification_id": payload.Notification.ID}
+			send(conn, ack)
+			fmt.Println("Auto ACK sent")
+		}
+	}
+}
+
+func send(conn *net.UDPConn, payload map[string]any) {
+	data, err := json.Marshal(payload)
+	if err != nil {
+		fmt.Println("Marshal error:", err)
+		return
+	}
+	if _, err := conn.Write(data); err != nil {
+		fmt.Println("Send error:", err)
 	}
 }

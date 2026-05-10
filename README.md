@@ -8,7 +8,7 @@
 
 MangaHub is a backend system for a manga tracking platform. Built in **Go (Golang)**, it focuses on clean modular structure, practical network programming, and a clear progression through the course phases.
 
-## ✨ Key Features (Phase 1-2)
+## ✨ Key Features (Phase 1-3)
 
 *   **🔒 Authentication & Security:** 
     *   User registration and login.
@@ -23,6 +23,9 @@ MangaHub is a backend system for a manga tracking platform. Built in **Go (Golan
 *   **🔁 TCP Progress Sync:**
     *   JWT-authenticated TCP server for progress updates.
     *   Broadcasts progress to connected clients.
+*   **📣 UDP Notifications:**
+    *   UDP server for chapter release notifications.
+    *   Client registration and ACK retries for delivery confirmation.
 *   **⚙️ DevOps & CI/CD:** 
     *   Containerized using **Docker & Docker Compose**.
     *   CI pipeline via **GitHub Actions** for build and test checks.
@@ -44,6 +47,7 @@ mangahub/
 ├── cmd/
 │   ├── api-server/main.go        # HTTP API server
 │   ├── tcp-server/main.go        # TCP sync server 
+│   ├── udp-client/main.go        # UDP test client
 │   ├── udp-server/main.go        # UDP notification server 
 │   └── grpc-server/main.go       # gRPC service server 
 │
@@ -86,12 +90,13 @@ Run with Docker **(Recommended)**
    ```
    The API will be available at http://localhost:8080 and the database will be automatically seeded.
 
-Run locally **(Phase 1-2)**
+Run locally **(Phase 1-3)**
 1. Set environment variables:
     - JWT_SECRET (required)
     - DB_PATH (optional, default mangahub.db)
     - MANGA_SEED_PATH (optional, default data/manga_seed.json)
     - TCP_SERVER_ADDR (optional, default 127.0.0.1:9000 for local API -> TCP notify)
+    - UDP_SERVER_ADDR (optional, default 127.0.0.1:9001 for local API -> UDP notify)
 2. Start the API server:
     ```
     go run ./cmd/api-server
@@ -100,6 +105,14 @@ Run locally **(Phase 1-2)**
     ```
     go run ./cmd/tcp-server
     ```
+4. Start the UDP server:
+    ```
+    go run ./cmd/udp-server
+    ```
+5. UDP test client (optional):
+    ```
+    go run ./cmd/udp-client
+    ```
 
 Seed data (MangaDex)
 1. Generate seed JSON:
@@ -107,17 +120,15 @@ Seed data (MangaDex)
     go run ./cmd/seed-mangadex
     ```
 2. The output file is [data/manga_seed.json](data/manga_seed.json).
----
-- Phase 1 API details
-   - See [docs/phase-1.md](docs/phase-1.md).
-- Phase 2 TCP details
-   - See [docs/phase-2-tcp.md](docs/phase-2-tcp.md).
----
+## 🎬 Demo Guides (Docker)
+- Phase 1 (HTTP API): [docs/phase-1-api.md](docs/phase-1-api.md)
+- Phase 2 (TCP progress sync): [docs/phase-2-tcp.md](docs/phase-2-tcp.md)
+- Phase 2 (UDP notifications): [docs/phase-2-udp.md](docs/phase-2-udp.md)
 ## 🗺 Roadmap
 
 * [x] Phase 1: Core REST API, Auth, and Database integration.
 * [x] Phase 2: TCP progress sync server.
-* [ ] Phase 3: UDP notifications system.
+* [x] Phase 3: UDP notifications system.
 * [ ] Phase 4: WebSocket chat system.
 * [ ] Phase 5: gRPC internal services.
 

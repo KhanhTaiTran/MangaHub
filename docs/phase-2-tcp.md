@@ -1,22 +1,23 @@
 # MangaHub Phase 2 Documentation - TCP Progress Sync
 
-## Scope
+## Overview
 Phase 2 adds a TCP progress sync server that accepts concurrent connections, requires a JWT auth handshake, broadcasts progress updates, and writes progress to the database.
 
-## Run Instructions
-1. Set environment variables:
-   - JWT_SECRET: required, same value as the API server
-   - DB_PATH: optional, default is mangahub.db
-   - TCP_PORT: optional, default is 9000
-2. Start the TCP server:
-   - go run ./cmd/tcp-server
+## Architecture
+- TCP server listens on port 9000 (configurable) and manages client sessions.
+- First message must be `auth` with a JWT token.
+- Progress updates are stored in `user_list_items` and broadcast to all clients.
+- TCP notifications are triggered both from TCP clients and via HTTP `/users/progress`.
 
-## TCP Message Protocol
+## Environment Variables
+- JWT_SECRET: required for token validation
+- TCP_PORT: TCP server port (default 9000)
+- TCP_SERVER_ADDR: API -> TCP target (default 127.0.0.1:9000 for local, tcp-server:9000 for Docker)
+
+## Message Protocol
 All messages are JSON objects, one per line.
 
 ### Auth (first message)
-Client must authenticate before any other message.
-
 Request:
 {
   "type": "auth",
@@ -51,7 +52,7 @@ Request:
   "list_name": "reading"
 }
 
-Broadcast (to all clients):
+Broadcast:
 {
   "type": "progress",
   "progress": {
@@ -64,20 +65,57 @@ Broadcast (to all clients):
   }
 }
 
-## HTTP API Integration
-The HTTP endpoint PUT /users/progress notifies the TCP server in the background after updating the database. It uses a TCP auth handshake with the same JWT used in the HTTP request.
+## HTTP Integration
+- PUT /users/progress (JWT required) updates the DB and notifies the TCP server.
 
-Environment variable for API server:
-- TCP_SERVER_ADDR (default 127.0.0.1:9000 for local run, tcp-server:9000 for Docker)
+## Error Handling
+- Invalid auth or token -> error message, connection closed.
+- Unknown message types -> error message.
+- Slow clients are dropped if their send buffer fills.
 
-## Testing
-1. Start API server and TCP server.
-2. Use Postman to log in and get a JWT token.
-3. Run the TCP client:
-   - go run ./cmd/tcp-client
-4. Send auth and progress messages in the TCP client and watch for broadcasts.
-5. Update progress via Postman and confirm the TCP client receives a progress broadcast.
+## Demo Guide (Docker)
+
+### Demo Setup
+1. Start services:
+   ```
+   docker compose up --build -d
+   ```
+2. Get a JWT token (see [docs/phase-1-api.md](docs/phase-1-api.md)). Save it as `<JWT>`.
+
+### Demo Script (TCP + HTTP)
+1) Open TCP client inside the TCP container
+```bash
+docker compose exec tcp-server go run ./cmd/tcp-client
+```
+Expected: `Connected to localhost:9000!`
+
+2) Authenticate the TCP client
+```json
+{"type":"auth","token":"<JWT>"}
+```
+Expected: `ack` message with `authenticated`.
+
+3) Ping check
+```json
+{"type":"ping"}
+```
+Expected: `pong` message.
+
+4) Trigger progress update via HTTP
+```bash
+curl.exe -X PUT http://localhost:8080/users/progress ^
+  -H "Authorization: Bearer <JWT>" ^
+  -H "Content-Type: application/json" ^
+  -d "{\"manga_id\":\"<MANGA_ID>\",\"list_name\":\"reading\",\"status\":\"reading\",\"current_chapter\":9}"
+```
+Expected: `200` with `Progress updated`. TCP client receives a broadcast.
+
+5) Send progress directly from TCP client (optional)
+```json
+{"type":"progress","manga_id":"<MANGA_ID>","chapter":10,"status":"reading","list_name":"reading"}
+```
+Expected: TCP client receives a `progress` broadcast.
 
 ## Notes
-- The TCP server persists progress into user_list_items for consistency with the HTTP API.
-- The server supports concurrent clients and drops slow connections if the send buffer is full.
+- The TCP server writes progress to `user_list_items` to stay consistent with the HTTP API.
+- Messages are newline-delimited JSON objects.

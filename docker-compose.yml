@@ -30,14 +30,14 @@ services:
       - "9000:9000" # Port for TCP Socket
     restart: on-failure
 
-  # # 3. UDP Server (Notification System)
-  # udp-server:
-  #   <<: *go-service
-  #   container_name: mh-udp
-  #   command: go run cmd/udp-server/main.go
-  #   ports:
-  #     - "9001:9001/udp" # Port for UDP Socket (note the /udp)
-  #   restart: on-failure
+  # 3. UDP Server (Notification System)
+  udp-server:
+    <<: *go-service
+    container_name: mh-udp
+    command: go run cmd/udp-server/main.go
+    ports:
+      - "9001:9001/udp" # Port for UDP Socket (note the /udp)
+    restart: on-failure
 
   # # 4. gRPC Server (Internal Microservice Communication)
   # grpc-server:

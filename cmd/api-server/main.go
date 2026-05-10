@@ -90,6 +90,7 @@ func setupRouter() *gin.Engine {
 				"username": username,
 			})
 		})
+		apiGroup.POST("/manga/:id/notify", manga.NotifyChapterRelease)
 	}
 
 	// User library routes (protected)
