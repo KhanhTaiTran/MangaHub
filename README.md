@@ -120,13 +120,6 @@ Run locally **(Phase 1-3)**
     go run ./cmd/grpc-server
     ```
 
-Seed data (MangaDex)
-1. Generate seed JSON:
-    ```
-    go run ./cmd/seed-mangadex
-    ```
-2. The output file is [data/manga_seed.json](data/manga_seed.json).
-
 ## Documentation
 - API Reference: [docs/api.md](docs/api.md)
 - Setup Guide: [docs/setup.md](docs/setup.md)
@@ -140,6 +133,7 @@ Seed data (MangaDex)
 - Phase 1 (HTTP API): [docs/phase-1-api.md](docs/phase-1-api.md)
 - Phase 2 (TCP progress sync): [docs/phase-2-tcp.md](docs/phase-2-tcp.md)
 - Phase 3 (UDP notifications): [docs/phase-3-udp.md](docs/phase-3-udp.md)
+- Phase 4 (Websocket Chat room): [docs/phase-4-ws.md](docs/phase-4-ws.md)
 - Phase 5 (gRPC internal services): [docs/phase-5-grpc.md](docs/phase-5-grpc.md)
 ## 🗺 Roadmap
 
