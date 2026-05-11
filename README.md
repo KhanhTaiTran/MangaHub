@@ -115,6 +115,10 @@ Run locally **(Phase 1-3)**
     ```
     go run ./cmd/udp-client
     ```
+6. Start the gRPC server (Phase 5):
+    ```
+    go run ./cmd/grpc-server
+    ```
 
 Seed data (MangaDex)
 1. Generate seed JSON:
@@ -126,12 +130,13 @@ Seed data (MangaDex)
 - Phase 1 (HTTP API): [docs/phase-1-api.md](docs/phase-1-api.md)
 - Phase 2 (TCP progress sync): [docs/phase-2-tcp.md](docs/phase-2-tcp.md)
 - Phase 2 (UDP notifications): [docs/phase-2-udp.md](docs/phase-2-udp.md)
+- Phase 5 (gRPC internal services): [docs/phase-5-grpc.md](docs/phase-5-grpc.md)
 ## 🗺 Roadmap
 
 * [x] Phase 1: Core REST API, Auth, and Database integration.
 * [x] Phase 2: TCP progress sync server.
 * [x] Phase 3: UDP notifications system.
 * [ ] Phase 4: WebSocket chat system.
-* [ ] Phase 5: gRPC internal services.
+* [x] Phase 5: gRPC internal services.
 
 ---

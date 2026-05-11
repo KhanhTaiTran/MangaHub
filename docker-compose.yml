@@ -39,11 +39,11 @@ services:
       - "9001:9001/udp" # Port for UDP Socket (note the /udp)
     restart: on-failure
 
-  # # 4. gRPC Server (Internal Microservice Communication)
-  # grpc-server:
-  #   <<: *go-service
-  #   container_name: mh-grpc
-  #   command: go run cmd/grpc-server/main.go
-  #   ports:
-  #     - "50051:50051" # Port for gRPC
-  #   restart: on-failure
+  # 4. gRPC Server (Internal Microservice Communication)
+  grpc-server:
+    <<: *go-service
+    container_name: mh-grpc
+    command: go run cmd/grpc-server/main.go
+    ports:
+      - "50051:50051" # Port for gRPC
+    restart: on-failure
