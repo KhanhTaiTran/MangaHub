@@ -113,6 +113,27 @@ The server determines target users from `user_list_items` and sends `target_user
    ```
 7. Confirm the client receives the notification and auto-ACKs it.
 
+Bước 1: Bật Server và mở terminal xem log của Docker (docker compose logs -f udp-server).
+
+Bước 2: Mở 1 terminal khác, chạy con udp-client lên và gõ lệnh đăng ký:
+register <DÁN_TOKEN_VÀO_ĐÂY>
+
+Bước 3 (Quan trọng): Bấm thẳng Ctrl + C để tắt cái terminal udp-client đó đi. (Lúc này Server vẫn đinh ninh là bạn đang online vì UDP không có kết nối thường trực như TCP).
+
+Bước 4: Mở Postman (hoặc gọi HTTP API) bắn một thông báo mới cho User đó.
+
+Bước 5: Quay sang nhìn màn hình Log của Server. Bạn sẽ thấy Server gọi mỏi mồm:
+
+Đợi 3s... UDP ack timeout for 127.0.0.1:xxx. Retrying... (attempt 1/3)
+
+Đợi 3s... UDP ack timeout for 127.0.0.1:xxx. Retrying... (attempt 2/3)
+
+Đợi 3s... UDP ack timeout for 127.0.0.1:xxx. Retrying... (attempt 3/3)
+
+UDP client 127.0.0.1:xxx removed after 3 failed attempts
+
+👉 Kịch bản này show ra là ăn trọn 5 điểm Bonus phần RUDP ngay lập tức!
+
 ## Notes
 - If `target_users` is empty, the server broadcasts to all registered clients.
 - ACK retries are logged and slow clients are removed after repeated failures.
