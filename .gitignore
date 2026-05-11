@@ -33,3 +33,5 @@ go.work.sum
 
 # plan-mangaHub prompt
 .github/prompts/plan-mangaHub.prompt.md
+
+data/mangahub.db-*
