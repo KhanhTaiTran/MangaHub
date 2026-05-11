@@ -35,3 +35,6 @@ go.work.sum
 .github/prompts/plan-mangaHub.prompt.md
 
 data/mangahub.db-*
+
+#postman collection
+postman

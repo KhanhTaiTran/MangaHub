@@ -140,7 +140,7 @@ Run locally **(Phase 1-3)**
 * [x] Phase 1: Core REST API, Auth, and Database integration.
 * [x] Phase 2: TCP progress sync server.
 * [x] Phase 3: UDP notifications system.
-* [ ] Phase 4: WebSocket chat system.
+* [x] Phase 4: WebSocket chat system.
 * [x] Phase 5: gRPC internal services.
 
 ---
