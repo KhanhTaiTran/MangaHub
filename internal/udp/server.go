@@ -80,8 +80,8 @@ func (s *NotificationServer) Run(ctx context.Context) error {
 
 	buf := make([]byte, 4096)
 	for {
-		_ = conn.SetReadDeadline(time.Now().Add(500 * time.Millisecond)) // set read timeout (500ms) to allow periodic context check
-		n, remote, err := conn.ReadFromUDP(buf)
+		_ = conn.SetReadDeadline(time.Now().Add(500 * time.Millisecond)) // set read timeout (0.5s) to allow periodic context check
+		n, remote, err := conn.ReadFromUDP(buf)                          // read incoming UDP message
 		if err != nil {
 			if netErr, ok := err.(net.Error); ok && netErr.Timeout() {
 				select {
@@ -220,6 +220,7 @@ func (s *NotificationServer) snapshotClients() []*net.UDPAddr {
 	return clients
 }
 
+// snapshotClientsForUsers returns a slice of client addresses for the given target user IDs, ensuring no duplicates
 func (s *NotificationServer) snapshotClientsForUsers(userIDs []string) []*net.UDPAddr {
 	s.mu.RLock()
 	defer s.mu.RUnlock()

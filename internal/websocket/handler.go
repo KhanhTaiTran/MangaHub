@@ -70,6 +70,7 @@ func handleWebSocket(c *gin.Context, hub *ChatHub) {
 	readPump(conn, hub, userID, username, room)
 }
 
+// readPump handles incoming messages from the client and broadcasts them to the hub
 func readPump(conn *websocket.Conn, hub *ChatHub, userID, username, room string) {
 	defer func() {
 		hub.Unregister <- conn
@@ -105,6 +106,7 @@ func readPump(conn *websocket.Conn, hub *ChatHub, userID, username, room string)
 	}
 }
 
+// writePump handles outgoing messages to the client and periodic pings to keep the connection alive
 func writePump(conn *websocket.Conn, clientState *client) {
 	ticker := time.NewTicker(30 * time.Second)
 	defer func() {

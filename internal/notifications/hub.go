@@ -75,6 +75,7 @@ func (h *Hub) snapshotTargets(targetUsers []string) []chan Notification {
 	h.mu.RLock()
 	defer h.mu.RUnlock()
 
+	// if no specific targets, broadcast to all clients
 	var targets []chan Notification
 	if len(targetUsers) == 0 {
 		for _, clientSet := range h.clients {
@@ -96,7 +97,7 @@ func (h *Hub) snapshotTargets(targetUsers []string) []chan Notification {
 	return targets
 }
 
-var hub = NewHub()
+var hub = NewHub() // create a global hub instance
 
 // Register registers a web demo client for a specific user.
 func Register(userID string) chan Notification {
