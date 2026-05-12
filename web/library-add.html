@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MangaHub - Add Library</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav>
+      <span class="brand">MangaHub</span>
+      <a href="index.html">Login</a>
+      <a href="register.html">Register</a>
+      <a href="profile.html">Profile</a>
+      <a href="manga.html">Manga</a>
+      <a href="library-add.html" class="active">Add Library</a>
+      <a href="library-list.html">Library</a>
+      <a href="progress.html">Progress</a>
+      <a href="notify.html">Notify</a>
+      <a href="chat.html">Chat</a>
+      <span class="api-base">API: <span id="api-base"></span></span>
+    </nav>
+
+    <header class="page-title">
+      <h1>Add to Library</h1>
+      <p class="muted">Add a manga to a user list.</p>
+    </header>
+
+    <section class="panel">
+      <h2>Session</h2>
+      <div class="field">
+        <label for="token">JWT token</label>
+        <input id="token" type="text" placeholder="paste token here" />
+      </div>
+      <div class="row">
+        <button id="btn-set-token">Save Token</button>
+        <button id="btn-logout">Logout</button>
+      </div>
+      <p class="muted">Token status: <span id="token-short">none</span></p>
+    </section>
+
+    <section class="panel">
+      <h2>Add to Library</h2>
+      <div class="field">
+        <label for="libadd-manga">Manga ID</label>
+        <input id="libadd-manga" type="text" placeholder="manga_id" />
+      </div>
+      <div class="field">
+        <label for="libadd-list">List name</label>
+        <input id="libadd-list" type="text" placeholder="reading" />
+      </div>
+      <div class="field">
+        <label for="libadd-status">Status</label>
+        <input id="libadd-status" type="text" placeholder="reading" />
+      </div>
+      <div class="field">
+        <label for="libadd-chapter">Current chapter</label>
+        <input id="libadd-chapter" type="number" min="0" placeholder="1" />
+      </div>
+      <div class="row">
+        <button id="btn-libadd">Add</button>
+      </div>
+      <pre id="libadd-log" class="log"></pre>
+    </section>
+
+    <script src="app.js"></script>
+  </body>
+</html>

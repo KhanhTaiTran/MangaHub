@@ -1,0 +1,7 @@
+$kind: http-request
+name: Get manga
+url: http://localhost:8080/manga?
+method: GET
+queryParams:
+  "": ""
+order: 1778338103729

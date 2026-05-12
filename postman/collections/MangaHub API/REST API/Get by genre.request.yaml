@@ -1,0 +1,8 @@
+$kind: http-request
+name: Get by genre
+url: http://localhost:8080/manga?genre=action&limit=2
+method: GET
+queryParams:
+  genre: action
+  limit: "2"
+order: 4344645875182320

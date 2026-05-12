@@ -1,0 +1,5 @@
+$kind: collection
+name: MangaHub API
+variables:
+  baseUrl: ""
+  jwtToken: ""

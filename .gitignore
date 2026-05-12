@@ -30,3 +30,11 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# plan-mangaHub prompt
+.github/prompts/plan-mangaHub.prompt.md
+
+data/mangahub.db-*
+
+#postman collection
+postman

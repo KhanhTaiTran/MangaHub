@@ -1,0 +1,9 @@
+$kind: http-request
+name: get list manga in lib
+url: " http://localhost:8080/users/library"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Nzg2NDQ1ODYsInN1YiI6ImJmNjk2MDY2LTVhMDYtNDE5Yy1hN2Y0LTgxYTM1YzA5NjBjNyIsInVzZXJuYW1lIjoidGNwIn0.2ITpfn6NxG3rnvO3AVpFtV9GB1ob-o6IZ4kdAao9gMw
+order: 4503518399225967

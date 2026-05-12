@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+package mangahub.v1;
+
+option go_package = "MangaHub/proto/mangahubpb";
+
+import "google/protobuf/empty.proto";
+
+message Manga {
+  string id = 1;
+  string title = 2;
+  string author = 3;
+  repeated string genres = 4;
+  string status = 5;
+  int32 total_chapters = 6;
+  string description = 7;
+  string cover_url = 8;
+}
+
+message GetMangaRequest {
+  string id = 1;
+}
+
+message SearchRequest {
+  string query = 1;
+  string author = 2;
+  string genre = 3;
+  string status = 4;
+  int32 limit = 5;
+  int32 offset = 6;
+}
+
+message SearchResponse {
+  repeated Manga items = 1;
+  int32 count = 2;
+}
+
+message ProgressRequest {
+  string manga_id = 1;
+  string list_name = 2;
+  string status = 3;
+  int32 current_chapter = 4;
+}
+
+message ProgressResponse {
+  string message = 1;
+  string manga_id = 2;
+  string list_name = 3;
+  string status = 4;
+  int32 current_chapter = 5;
+}
+
+message ProfileResponse {
+  string id = 1;
+  string username = 2;
+}
+
+message GetLibraryRequest {
+  string list_name = 1;
+}
+
+message LibraryItem {
+  string list_name = 1;
+  Manga manga = 2;
+  int32 current_chapter = 3;
+  string status = 4;
+  string updated_at = 5;
+}
+
+message LibraryResponse {
+  repeated LibraryItem items = 1;
+  int32 count = 2;
+}
+
+service MangaService {
+  rpc GetManga(GetMangaRequest) returns (Manga);
+  rpc SearchManga(SearchRequest) returns (SearchResponse);
+  rpc UpdateProgress(ProgressRequest) returns (ProgressResponse);
+}
+
+service UserService {
+  rpc GetProfile(google.protobuf.Empty) returns (ProfileResponse);
+  rpc GetLibrary(GetLibraryRequest) returns (LibraryResponse);
+}

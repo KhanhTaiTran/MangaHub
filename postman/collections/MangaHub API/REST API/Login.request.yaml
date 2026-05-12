@@ -1,0 +1,16 @@
+$kind: http-request
+version: '1.0.0'
+name: Login
+description: Authenticate a user and receive a JWT token.
+method: POST
+url: "{{baseUrl}}/auth/login"
+order: 4499788019974294
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "username": "tcp",
+      "password": "tcp12345678"
+    }

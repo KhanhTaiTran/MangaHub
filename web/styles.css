@@ -1,0 +1,140 @@
+:root {
+  --border: #ccc;
+  --bg: #fff;
+  --muted: #666;
+  --accent: #0a7;
+  --soft: #f9f9f9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: monospace;
+  background: var(--bg);
+  color: #111;
+  max-width: 960px;
+  margin: 40px auto;
+  padding: 0 16px 60px;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+  margin-bottom: 24px;
+}
+
+nav a {
+  color: #111;
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+nav a.active {
+  background: #f2f2f2;
+}
+
+.brand {
+  font-weight: 700;
+  margin-right: 8px;
+}
+
+.api-base {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.page-title {
+  margin-bottom: 16px;
+}
+
+.page-title h1 {
+  font-size: 1.6rem;
+  margin-bottom: 6px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.panel {
+  border: 1px solid var(--border);
+  padding: 16px;
+  margin-bottom: 20px;
+  background: var(--bg);
+}
+
+.panel h2 {
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+label {
+  font-size: 0.9rem;
+}
+
+input,
+select,
+textarea {
+  border: 1px solid var(--border);
+  padding: 6px;
+  font-family: inherit;
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+button {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  background: #f2f2f2;
+  cursor: pointer;
+}
+
+.log {
+  border: 1px solid var(--border);
+  padding: 10px;
+  background: var(--soft);
+  min-height: 120px;
+  white-space: pre-wrap;
+  overflow-y: auto;
+}
+
+.chat-log {
+  height: 300px;
+}
+
+.sent {
+  color: blue;
+}
+
+.received {
+  color: green;
+}
+
+.system {
+  color: gray;
+  font-style: italic;
+}

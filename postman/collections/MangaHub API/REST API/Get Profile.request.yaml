@@ -1,0 +1,10 @@
+$kind: http-request
+version: '1.0.0'
+name: 'Get Profile'
+description: "Protected endpoint that returns the current authenticated user's profile."
+method: GET
+url: '{{baseUrl}}/api/profile'
+order: 4503367232244985
+headers:
+  - key: Authorization
+    value: 'Bearer {{jwtToken}}'

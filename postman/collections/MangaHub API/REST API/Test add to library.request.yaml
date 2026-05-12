@@ -1,0 +1,20 @@
+$kind: http-request
+name: Test add to library
+url: http://localhost:8080/users/library
+method: POST
+headers:
+  Authorization: Bearer {{jwtToken}}
+body:
+  type: json
+  content: |-
+    {
+        "manga_id": "304ceac3-8cdb-4fe7-acf7-2b6ff7a60613",
+        "list_name": "reading",
+        "status": "reading",
+        "current_chapter": 3
+    }
+auth:
+  type: bearer
+  credentials:
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Nzg2NDQ1ODYsInN1YiI6ImJmNjk2MDY2LTVhMDYtNDE5Yy1hN2Y0LTgxYTM1YzA5NjBjNyIsInVzZXJuYW1lIjoidGNwIn0.2ITpfn6NxG3rnvO3AVpFtV9GB1ob-o6IZ4kdAao9gMw
+order: 4503494506564000
